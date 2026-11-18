@@ -1,0 +1,26 @@
+# Serial map for a Sowbot rover on WeActH723: two F9P receivers plus the Avaota SBC.
+# Load after the board defaults. Matches the LEVIA rover.parm roles, remapped to
+# this board's three UARTs (SERIAL_ORDER OTG1 USART1 USART2 UART4).
+#
+#   SERIAL0 = USB                     MAVLink / GCS
+#   SERIAL1 = USART1 PA9/PA10         F9P #1 (base, GPS1)
+#   SERIAL2 = USART2 PA2/PA3          F9P #2 (rover, GPS2)
+#   SERIAL3 = UART4  PB9(TX)/PB8(RX)  Avaota SBC, MAVLink2 (devkit_mavlink_bridge)
+#
+# The base F9P must stay on the lower-numbered port: ArduPilot gives GPS1 to the
+# lowest-numbered port set to GPS. Swapping them breaks the moving baseline.
+# This uses up the RC (UART4) and telemetry (USART2) ports from the README pin
+# table. RC and radio telemetry have to go through the SBC or USB.
+SERIAL1_PROTOCOL 5
+SERIAL2_PROTOCOL 5
+SERIAL3_PROTOCOL 2
+# 115 is 115200 baud. Must match MAVLINK_BAUD on the SBC (bridge default 115200).
+SERIAL3_BAUD 115
+
+# Moving-baseline heading from the two F9Ps. ArduPilot routes RTCM3 from the
+# base to the rover, so no wire is needed between the receivers.
+GPS_TYPE 17
+GPS_TYPE2 18
+GPS_AUTO_CONFIG 1
+# Set GPS_MB1_OFS_X/Y/Z to the base-to-rover antenna offset in metres once the
+# antennas are fixed, and check the sign on the bench.
