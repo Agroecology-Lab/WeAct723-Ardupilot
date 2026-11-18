@@ -66,11 +66,13 @@ fi
 
 echo ""
 echo "--- Copying board definition files ---"
-BOARD_DEST="$ARDUPILOT_ROOT/libraries/AP_HAL_ChibiOS/hwdef/WeActH723"
-mkdir -p "$BOARD_DEST"
-cp "$SCRIPT_DIR/../hwdef/WeActH723/hwdef.dat" "$BOARD_DEST/"
-cp "$SCRIPT_DIR/../hwdef/WeActH723/hwdef-bl.dat" "$BOARD_DEST/"
-echo "  ✓ Copied hwdef files to $BOARD_DEST"
+for d in "$SCRIPT_DIR"/../hwdef/*/; do
+    name="$(basename "$d")"
+    dest="$ARDUPILOT_ROOT/libraries/AP_HAL_ChibiOS/hwdef/$name"
+    mkdir -p "$dest"
+    cp "$d"hwdef*.dat "$dest/"
+    echo "  ✓ Copied $name to $dest"
+done
 
 echo ""
 echo "=== All patches applied ==="

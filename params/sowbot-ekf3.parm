@@ -1,0 +1,14 @@
+# EKF3 sources for the WeActH723-Rover board (ArduRover). Load after
+# params/sowbot-serial.parm. Not run on hardware or SITL.
+EK3_ENABLE 1
+EK2_ENABLE 0
+AHRS_EKF_TYPE 3
+EK3_SRC1_POSXY 3
+EK3_SRC1_VELXY 3
+EK3_SRC1_POSZ 1
+EK3_SRC1_VELZ 0
+# 3 = GPS yaw (moving baseline), compass as fallback.
+EK3_SRC1_YAW 3
+# Optical flow and wheel-encoder sources from LEVIA's sowbot-ekf3.parm are not
+# included: optical flow is compiled out of this board and the EMM patches were
+# not part of the measured build.

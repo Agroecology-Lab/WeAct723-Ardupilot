@@ -1,0 +1,21 @@
+# WeActH723-Rover: WeActH723 for ArduRover with EKF3.
+# Rover + EKF3 does not fit in the 640KB firmware region used with the
+# bootloader (about 31KB over). This variant drops the bootloader and flashes
+# at 0x08000000, giving 768KB (sectors 0-5). Parameters stay in sectors 6-7.
+# Flash by DFU at 0x08000000 (hold BOOT0). No USB firmware updates afterwards.
+include ../WeActH723/hwdef.dat
+
+undef HAL_NAVEKF3_AVAILABLE
+define HAL_NAVEKF3_AVAILABLE 1
+
+FLASH_RESERVE_START_KB 0
+
+# No bootloader to flash or verify against
+undef AP_BOOTLOADER_FLASHING_ENABLED
+define AP_BOOTLOADER_FLASHING_ENABLED 0
+undef AP_CHECK_FIRMWARE_ENABLED
+define AP_CHECK_FIRMWARE_ENABLED 0
+
+# Two-F9P moving-baseline heading (GPS_TYPE 17/18). Off in minimize_features.
+undef GPS_MOVING_BASELINE
+define GPS_MOVING_BASELINE 1
