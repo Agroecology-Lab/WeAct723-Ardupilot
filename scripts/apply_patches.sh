@@ -29,7 +29,10 @@ apply_patch() {
     local description="$2"
     echo "Patching: $description"
     if [ -f "$PATCHES_DIR/$(basename $file).patch" ]; then
-        patch -p1 < "$PATCHES_DIR/$(basename $file).patch" && echo "  ✓ OK" || echo "  ✗ FAILED (may already be applied)"
+        # ChibiOS is a submodule: its patch is relative to modules/ChibiOS
+        local dir="."
+        case "$file" in modules/ChibiOS/*) dir="modules/ChibiOS" ;; esac
+        patch -p1 -d "$dir" < "$PATCHES_DIR/$(basename $file).patch" && echo "  ✓ OK" || echo "  ✗ FAILED (may already be applied)"
     else
         echo "  ✗ Patch file not found: $PATCHES_DIR/$(basename $file).patch"
     fi
