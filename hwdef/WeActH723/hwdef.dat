@@ -143,3 +143,9 @@ define MODE_DRIFT_ENABLED 0
 define MODE_FLIP_ENABLED 0
 define HAL_SPEKTRUM_TELEM_ENABLED 0
 define HAL_CRSF_TELEM_ENABLED 0
+
+# ── OPTIONAL: Hiwonder I2C encoder motor driver ──────────────────────────────
+# Needs patches/hiwonder-emm applied (WITH_EMM=1 scripts/apply_patches.sh).
+# Unverified on this board: flash headroom in the 640KB region has not been
+# checked. See docs/HIWONDER_EMM.md.
+#define AP_HIWONDEREMM_ENABLED 1
