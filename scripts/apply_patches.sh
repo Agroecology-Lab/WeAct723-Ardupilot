@@ -6,6 +6,7 @@
 # Usage:
 #   cd ~/ardupilot
 #   bash /path/to/WeActH723-ArduPilot/scripts/apply_patches.sh
+#   WITH_EMM=1 bash .../apply_patches.sh   # also apply Hiwonder EMM driver
 
 set -e
 
@@ -41,6 +42,24 @@ apply_patch "libraries/AP_HAL_ChibiOS/AnalogIn.cpp" "ADCD3 guard for H723"
 apply_patch "Tools/AP_Bootloader/support.cpp" "strlen optimizer bug fix"
 apply_patch "libraries/AP_HAL_ChibiOS/hwdef/common/board.c" "USB reset + CRS init"
 apply_patch "modules/ChibiOS/os/hal/ports/STM32/LLD/OTGv1/hal_usb_lld.c" "USB turnaround time"
+
+# Optional: Hiwonder EMM I2C motor driver (WITH_EMM=1). Idempotent.
+# Also needs "define AP_HIWONDEREMM_ENABLED 1" in the hwdef; see docs/HIWONDER_EMM.md
+if [ "${WITH_EMM:-0}" = 1 ]; then
+    echo ""
+    echo "--- Applying Hiwonder EMM patches ---"
+    for p in "$PATCHES_DIR"/hiwonder-emm/*.patch; do
+        if git -C "$ARDUPILOT_ROOT" apply --check "$p" 2>/dev/null; then
+            git -C "$ARDUPILOT_ROOT" apply "$p" && echo "  ✓ applied $(basename "$p")"
+        elif git -C "$ARDUPILOT_ROOT" apply --check -R "$p" 2>/dev/null; then
+            echo "  - already applied $(basename "$p")"
+        else
+            echo "  ✗ $(basename "$p") neither applies nor is already applied (ArduPilot drift?)"
+            echo "    Targets $(cat "$PATCHES_DIR/hiwonder-emm/UPSTREAM_COMMIT")"
+            exit 1
+        fi
+    done
+fi
 
 echo ""
 echo "--- Copying board definition files ---"
